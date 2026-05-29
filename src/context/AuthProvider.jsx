@@ -21,11 +21,15 @@ export const AuthProvider = ({ children }) => {
     const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
       if (firebaseUser) {
         try {
-          await axiosInstance.post('/api/auth/login', {
+          const loginRes = await axiosInstance.post('/api/auth/login', {
             email: firebaseUser.email,
             name: firebaseUser.displayName,
             photoURL: firebaseUser.photoURL,
           });
+
+          if (loginRes.data.token) {
+            localStorage.setItem('token', loginRes.data.token);
+          }
 
           const res = await axiosInstance.get('/api/auth/me');
           setUser(res.data);
@@ -39,6 +43,7 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         setUser(null);
+        localStorage.removeItem('token');
       }
       setLoading(false);
     });
@@ -50,11 +55,15 @@ export const AuthProvider = ({ children }) => {
     const result = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(result.user, { displayName: name });
 
-    await axiosInstance.post('/api/auth/login', {
+    const loginRes = await axiosInstance.post('/api/auth/login', {
       email: result.user.email,
       name,
       photoURL: result.user.photoURL || '',
     });
+
+    if (loginRes.data.token) {
+      localStorage.setItem('token', loginRes.data.token);
+    }
 
     const res = await axiosInstance.get('/api/auth/me');
     setUser(res.data);
@@ -64,11 +73,15 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const result = await signInWithEmailAndPassword(auth, email, password);
 
-    await axiosInstance.post('/api/auth/login', {
+    const loginRes = await axiosInstance.post('/api/auth/login', {
       email: result.user.email,
       name: result.user.displayName,
       photoURL: result.user.photoURL,
     });
+
+    if (loginRes.data.token) {
+      localStorage.setItem('token', loginRes.data.token);
+    }
 
     const res = await axiosInstance.get('/api/auth/me');
     setUser(res.data);
@@ -78,11 +91,15 @@ export const AuthProvider = ({ children }) => {
   const googleLogin = async () => {
     const result = await signInWithPopup(auth, googleProvider);
 
-    await axiosInstance.post('/api/auth/login', {
+    const loginRes = await axiosInstance.post('/api/auth/login', {
       email: result.user.email,
       name: result.user.displayName,
       photoURL: result.user.photoURL,
     });
+
+    if (loginRes.data.token) {
+      localStorage.setItem('token', loginRes.data.token);
+    }
 
     const res = await axiosInstance.get('/api/auth/me');
     setUser(res.data);
@@ -93,11 +110,15 @@ export const AuthProvider = ({ children }) => {
     try {
       await axiosInstance.post('/api/auth/logout');
       await signOut(auth);
+      localStorage.removeItem('token');
       setUser(null);
       toast.success('Logged out successfully');
     } catch (error) {
       console.error('Logout error:', error);
-      toast.error('Failed to logout');
+      await signOut(auth);
+      localStorage.removeItem('token');
+      setUser(null);
+      toast.success('Logged out successfully');
     }
   };
 
@@ -105,7 +126,7 @@ export const AuthProvider = ({ children }) => {
     const res = await axiosInstance({
       url: `/api${endpoint}`,
       method: options.method || 'GET',
-      data: options.body ? JSON.parse(options.body) : undefined,
+      data: options.data || (options.body ? JSON.parse(options.body) : undefined),
     });
     return res.data;
   };
