@@ -58,7 +58,7 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/approve`, { method: 'PATCH' });
       toast.success('Request approved! 🎉');
       handleOpenModal(selectedPet);
-      fetchListings(); // লিস্ট রিফ্রেশ করবে কারণ পেটের স্ট্যাটাস Adopted হয়ে যাবে
+      fetchListings(); 
     } catch (err) {
       toast.error(err.message || 'Failed to approve');
     }
@@ -200,7 +200,6 @@ const MyListings = () => {
       <AnimatePresence>
         {selectedPet && (
           <div className="fixed inset-0 z-50 flex justify-end">
-            {/* Backdrop Blur effect */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -209,9 +208,8 @@ const MyListings = () => {
               onClick={() => setSelectedPet(null)}
             />
 
-            {/* Side Drawer Content */}
             <motion.div
-              initial={{ x: '100%' }} // ডান পাশ থেকে ঢুকবে
+              initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
@@ -233,7 +231,7 @@ const MyListings = () => {
                 </button>
               </div>
 
-              {/* Modal Body (Scrollable Container) */}
+              {/* Modal Body */}
               <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {modalLoading ? (
                   <div className="flex justify-center py-12">
@@ -257,7 +255,6 @@ const MyListings = () => {
                             : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30'
                         }`}
                       >
-                        {/* Requester Info */}
                         <div className="flex items-start justify-between flex-wrap gap-3">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-rose-400 flex items-center justify-center text-white font-bold text-sm">
@@ -269,7 +266,6 @@ const MyListings = () => {
                             </div>
                           </div>
 
-                          {/* Status Badge */}
                           <span className={`text-xs font-bold px-3 py-1 rounded-full ${
                             req.status === 'approved'
                               ? 'bg-green-100 text-green-700'
@@ -281,20 +277,17 @@ const MyListings = () => {
                           </span>
                         </div>
 
-                        {/* Dates */}
                         <div className="flex gap-4 mt-3 text-sm text-gray-500">
                           <span>📅 Applied: {new Date(req.createdAt).toLocaleDateString()}</span>
                           <span>🚗 Pickup: <strong className="text-gray-700 dark:text-gray-300">{new Date(req.pickupDate).toLocaleDateString()}</strong></span>
                         </div>
 
-                        {/* Message */}
                         {req.message && (
                           <div className="mt-3 p-3 bg-white dark:bg-gray-700 rounded-lg border-l-4 border-pink-400 text-sm text-gray-600 dark:text-gray-300 italic">
                             "{req.message}"
                           </div>
                         )}
 
-                        {/* Approve/Reject Buttons */}
                         {req.status === 'pending' && !selectedPet.adopted && (
                           <div className="flex gap-3 mt-4">
                             <button

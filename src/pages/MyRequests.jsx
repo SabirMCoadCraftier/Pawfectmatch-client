@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthProvider';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 import { Eye, Trash2, Calendar, FileText, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const MyRequests = () => {
   const [requests, setRequests] = useState([]);
@@ -38,170 +39,119 @@ const MyRequests = () => {
     }
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  if (loading) return <LoadingSpinner />;
 
   return (
-    <div className="glass-panel" style={{ padding: '2rem 1.5rem' }}>
-      
-      {/* Title */}
-      <div style={{ marginBottom: '2rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 800 }}>My Adoption Applications</h2>
-        <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-          Track the status of your adoption requests and coordinate with pet shelters.
-        </p>
-      </div>
-
-      {requests.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-          <span style={{ fontSize: '3rem' }}>💌</span>
-          <h4 style={{ fontWeight: 700, margin: '1rem 0 0.5rem 0' }}>No Requests Filed</h4>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '1.5rem', maxWidth: '400px', margin: '0 auto 1.5rem auto' }}>
-            You haven't submitted any adoption applications yet. Find a pet you love and send a request!
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+      <div className="max-w-5xl mx-auto">
+        
+        {/* Title Header */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">My Adoption Applications</h2>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            Track the status of your adoption requests and coordinate with pet shelters.
           </p>
-          <Link to="/all-pets" className="btn btn-primary">
-            Explore Pets Available For Adoption
-          </Link>
         </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          {requests.map(req => {
-            const reqDate = new Date(req.createdAt).toLocaleDateString();
-            const pickupDate = new Date(req.pickupDate).toLocaleDateString();
-            
-            const petImage = req.petImage || `https://ui-avatars.com/api/?name=${req.petName}&background=f9a8d4&color=fff&size=100`;
-            const petBreed = req.petId?.breed || 'Unknown';
-            const petAge = req.petId?.age || 'N/A';
 
-            return (
-              <div
-                key={req._id}
-                className="glass-panel grid-requests-row"
-                style={{
-                  padding: '1.25rem',
-                  border: '1px solid var(--border-glass)',
-                  display: 'grid',
-                  gridTemplateColumns: '100px 2fr 1.5fr',
-                  gap: '1.5rem',
-                  alignItems: 'center',
-                  background: 'var(--bg-glass)'
-                }}
-              >
-                <img
-                  src={petImage}
-                  alt={req.petName}
-                  style={{
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: 'var(--radius-md)',
-                    objectFit: 'cover',
-                    border: '1px solid var(--border-glass)'
-                  }}
-                />
+        {requests.length === 0 ? (
+          <div className="text-center py-20 bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700">
+            <span className="text-6xl">💌</span>
+            <h4 className="text-xl font-bold text-gray-800 dark:text-white mt-4">No Requests Filed</h4>
+            <p className="text-gray-500 mt-2 mb-6 max-w-md mx-auto text-sm">
+              You haven't submitted any adoption applications yet. Find a pet you love and send a request!
+            </p>
+            <Link to="/pets" className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-6 py-3 rounded-full font-semibold shadow-lg shadow-pink-500/20 hover:from-pink-600 hover:to-rose-600 transition-all">
+              Explore Pets Available For Adoption
+            </Link>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {requests.map((req, i) => {
+              const reqDate = new Date(req.createdAt).toLocaleDateString();
+              const pickupDate = new Date(req.pickupDate).toLocaleDateString();
+              
+              // Fallback default image safe execution
+              const petImage = req.petId?.image || req.petImage || `https://ui-avatars.com/api/?name=${req.petName}&background=f9a8d4&color=fff&size=100`;
+              const petBreed = req.petId?.breed || 'Unknown';
+              const petSpecies = req.petId?.species || 'Pet';
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                  <div>
-                    <h3 style={{ fontSize: '1.2rem', fontWeight: 800 }}>{req.petName}</h3>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>
-                      Breed: {petBreed} • Age: {petAge} {petAge === 1 ? 'Year' : 'Years'}
-                    </p>
+              return (
+                <motion.div
+                  key={req._id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700/70 p-5 flex flex-col md:flex-row gap-5 items-center justify-between shadow-xs hover:shadow-md transition-all"
+                >
+                  <div className="flex flex-col sm:flex-row items-center gap-5 w-full md:w-auto">
+                    <img
+                      src={petImage}
+                      alt={req.petName}
+                      className="w-24 h-24 rounded-xl object-cover border border-gray-100 dark:border-gray-700 shadow-inner shrink-0"
+                    />
+
+                    <div className="text-center sm:text-left">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white">{req.petName}</h3>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                        {petSpecies} • Breed: {petBreed}
+                      </p>
+                      
+                      <div className="flex flex-wrap justify-center sm:justify-start gap-4 mt-3 text-xs font-semibold text-gray-400 tracking-wide uppercase">
+                        <span className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-md">
+                          <FileText size={14} className="text-pink-500" />
+                          Filed: <span className="text-gray-700 dark:text-gray-300 font-bold">{reqDate}</span>
+                        </span>
+                        <span className="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700/50 px-2.5 py-1 rounded-md">
+                          <Calendar size={14} className="text-blue-500" />
+                          Pickup: <span className="text-gray-700 dark:text-gray-300 font-bold">{pickupDate}</span>
+                        </span>
+                      </div>
+                    </div>
                   </div>
 
-                  <div style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '1rem',
-                    fontSize: '0.8rem',
-                    color: 'var(--text-muted)'
-                  }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                      <FileText size={14} style={{ color: 'var(--primary)' }} />
-                      Filed: {reqDate}
-                    </span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                      <Calendar size={14} style={{ color: 'var(--primary)' }} />
-                      Pickup: <strong style={{ color: 'var(--text-primary)' }}>{pickupDate}</strong>
-                    </span>
-                  </div>
-                </div>
+                  {/* Actions column section */}
+                  <div className="flex flex-col items-center md:items-end gap-3 w-full sm:w-auto shrink-0 border-t md:border-t-0 pt-4 md:pt-0 border-gray-100 dark:border-gray-700">
+                    <div>
+                      {req.status === 'pending' ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold bg-yellow-50 dark:bg-yellow-950/20 border border-yellow-200 dark:border-yellow-900 text-yellow-700 dark:text-yellow-500 px-3 py-1 rounded-full">
+                          <Clock size={12} /> Pending Review
+                        </span>
+                      ) : req.status === 'approved' ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 text-green-700 dark:text-green-500 px-3 py-1 rounded-full">
+                          <CheckCircle size={12} /> Approved Application
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-500 px-3 py-1 rounded-full">
+                          <XCircle size={12} /> Rejected / Closed
+                        </span>
+                      )}
+                    </div>
 
-                <div style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'flex-end',
-                  gap: '1rem',
-                  justifyContent: 'center'
-                }} className="requests-actions-col">
-                  <div>
-                    {req.status === 'pending' ? (
-                      <span className="badge badge-warning" style={{ gap: '0.3rem' }}>
-                        <Clock size={12} /> Pending Review
-                      </span>
-                    ) : req.status === 'approved' ? (
-                      <span className="badge badge-success" style={{ gap: '0.3rem' }}>
-                        <CheckCircle size={12} /> Approved
-                      </span>
-                    ) : (
-                      <span className="badge badge-danger" style={{ gap: '0.3rem' }}>
-                        <XCircle size={12} /> Rejected / Closed
-                      </span>
-                    )}
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
-                    <Link
-                      to={`/pets/${req.petId?._id || req.petId}`}
-                      className="btn btn-secondary"
-                      style={{ padding: '0.5rem 1rem', fontSize: '0.8rem', gap: '0.35rem' }}
-                    >
-                      <Eye size={14} />
-                      View Details
-                    </Link>
-
-                    {req.status === 'pending' && (
-                      <button
-                        onClick={() => handleCancelRequest(req._id, req.petName)}
-                        className="btn btn-secondary"
-                        style={{
-                          padding: '0.5rem 1rem',
-                          fontSize: '0.8rem',
-                          color: 'var(--danger)',
-                          border: '1px solid var(--danger-soft)',
-                          background: 'var(--danger-soft)',
-                          gap: '0.35rem'
-                        }}
+                    <div className="flex gap-2 w-full sm:w-auto">
+                      <Link
+                        to={`/pets/${req.petId?._id || req.petId}`}
+                        className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-4 py-2 rounded-xl hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
                       >
-                        <Trash2 size={14} />
-                        Cancel
-                      </button>
-                    )}
+                        <Eye size={14} /> View Pet
+                      </Link>
+
+                      {req.status === 'pending' && (
+                        <button
+                          onClick={() => handleCancelRequest(req._id, req.petName)}
+                          className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 text-xs font-bold bg-red-50 dark:bg-red-950/20 border border-red-200/60 text-red-500 px-4 py-2 rounded-xl hover:bg-red-100 dark:hover:bg-red-900/40 transition-all"
+                        >
+                          <Trash2 size={14} /> Cancel
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </div>
 
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      <style>{`
-        @media (max-width: 768px) {
-          .grid-requests-row {
-            grid-template-columns: 1fr !important;
-            text-align: center;
-            justify-items: center;
-            gap: 1rem !important;
-          }
-          .grid-requests-row div {
-            align-items: center !important;
-          }
-          .requests-actions-col {
-            align-items: center !important;
-          }
-        }
-      `}</style>
-
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
