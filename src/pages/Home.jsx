@@ -20,6 +20,7 @@ import {
   FaCat,
   FaCode,
   FaExternalLinkAlt,
+  FaStar, // রেটিং এর জন্য স্টার আইকন যোগ করা হয়েছে
 } from 'react-icons/fa';
 
 const fadeInUp = {
@@ -383,6 +384,13 @@ const Home = () => {
               >
                 <FaQuoteLeft className="text-3xl text-pink-200 dark:text-pink-800 absolute top-6 left-6" />
                 <div className="relative z-10">
+                  {/* --- রিয়েল-টাইম ৫ স্টার রেটিং রো যোগ করা হলো --- */}
+                  <div className="flex items-center gap-1 mb-4 pl-1">
+                    {[...Array(5)].map((_, index) => (
+                      <FaStar key={index} className="text-amber-400 fill-amber-400 text-sm" />
+                    ))}
+                  </div>
+
                   <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-6 italic">
                     "{t.quote}"
                   </p>
