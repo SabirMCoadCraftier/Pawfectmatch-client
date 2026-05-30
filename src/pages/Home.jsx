@@ -18,6 +18,8 @@ import {
   FaBath,
   FaDog,
   FaCat,
+  FaCode,
+  FaExternalLinkAlt,
 } from 'react-icons/fa';
 
 const fadeInUp = {
@@ -231,7 +233,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* NEW SECTION: Crazy Adventures Partner (Moved Before "Why Adopt") */}
+      {/* NEW SECTION: Crazy Adventures Partner */}
       <section className="py-20 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
@@ -246,7 +248,6 @@ const Home = () => {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center bg-white dark:bg-gray-800 p-6 md:p-8 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
-              {/* Image Container with Gradient Background */}
               <div className="overflow-hidden rounded-xl bg-gradient-to-tr from-pink-200 via-rose-300 to-blue-200 p-1.5 max-w-sm mx-auto md:max-w-full">
                 <img 
                   src="https://images.unsplash.com/photo-1534361960057-19889db9621e?w=600" 
@@ -255,7 +256,6 @@ const Home = () => {
                 />
               </div>
 
-              {/* Text & Button content */}
               <div className="space-y-6">
                 <h3 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500 dark:from-pink-400 dark:to-rose-400">
                   I'm Fluffy, Funny, and Ready to Turn Your Life Upside Down!
@@ -274,6 +274,45 @@ const Home = () => {
                   </Link>
                 </div>
               </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* BRANDING SECTION: Meet The Developer */}
+      <section className="py-20 bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-900 border-t border-b border-gray-100 dark:border-slate-800">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-white dark:bg-slate-900/60 p-8 md:p-10 rounded-3xl shadow-xl border border-slate-200/60 dark:border-slate-800 backdrop-blur-sm"
+          >
+            <div className="md:col-span-8 space-y-4 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-pink-500/10 to-rose-500/10 dark:from-pink-500/20 dark:to-rose-500/20 text-pink-600 dark:text-pink-400 rounded-lg text-xs font-bold uppercase tracking-wider mx-auto md:mx-0">
+                <FaCode /> Behind the Architecture
+              </div>
+              <h3 className="text-3xl font-extrabold text-slate-900 dark:text-white">
+                Looking for a Full-Stack Web Solution?
+              </h3>
+              <p className="text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl text-sm md:text-base">
+                This platform is engineered by <span className="font-semibold text-slate-800 dark:text-slate-200">Sabir Mahmud</span>. I build robust, production-ready applications with highly scalable architectures and polished, user-centric interactive interfaces.
+              </p>
+            </div>
+            
+            <div className="md:col-span-4 flex justify-center md:justify-end w-full">
+              <motion.a 
+                href="https://my-personal-portfolio-five-woad.vercel.app/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.03 }}
+                whileActive={{ scale: 0.98 }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-pink-500 dark:to-rose-500 text-white font-bold py-4 px-7 rounded-2xl shadow-lg transition-all duration-300 group"
+              >
+                Visit My Portfolio
+                <FaExternalLinkAlt size={13} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </motion.a>
             </div>
           </motion.div>
         </div>
