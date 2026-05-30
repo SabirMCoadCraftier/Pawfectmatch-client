@@ -19,7 +19,6 @@ const MyListings = () => {
       const data = await apiFetch('/pets/my');
       setListings(data);
       
-      // ডপডাউন মোডাল খোলা থাকলে সেটির পেটের লেটেস্ট অবজেক্ট স্টেটও আপডেট করে দিচ্ছি
       if (selectedPet) {
         const updatedPet = data.find(p => p._id === selectedPet._id);
         if (updatedPet) setSelectedPet(updatedPet);
@@ -64,7 +63,6 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/approve`, { method: 'PATCH' });
       toast.success('Request approved! 🎉');
       
-      // মোডাল ক্লোজ করে পেজ রি-লোড দিয়ে ডাটা সিঙ্ক করার সবচেয়ে সেফ এবং রিয়েল-টাইম ট্রিক
       setSelectedPet(null); 
       fetchListings();
       window.location.reload(); 
@@ -79,7 +77,6 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/reject`, { method: 'PATCH' });
       toast.success('Request rejected');
       
-      // মোডাল ক্লোজ করে পেজ রি-লোড দিয়ে ডাটা সিঙ্ক করার সবচেয়ে সেফ এবং রিয়েল-টাইম ট্রিক
       setSelectedPet(null);
       fetchListings();
       window.location.reload();
@@ -143,68 +140,88 @@ const MyListings = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {listings.map((pet, i) => (
-              <motion.div
-                key={pet._id}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
-              >
-                {/* Image */}
-                <div className="relative">
-                  <img
-                    src={pet.image}
-                    alt={pet.petName}
-                    className="w-full h-48 object-cover"
-                  />
-                  <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${
-                    pet.adopted
-                      ? 'bg-red-100 text-red-600'
-                      : 'bg-green-100 text-green-600'
-                  }`}>
-                    {pet.adopted ? 'Adopted' : 'Available'}
-                  </span>
-                </div>
+            {listings.map((pet, i) => {
+              // চেক করা হচ্ছে ব্যাকএন্ড থেকে পেন্ডিং রিকোয়েস্ট ট্র্যাকিং ডাটা আসছে কি না
+              // (আপনার ব্যাকএন্ড এপিআই অনুযায়ী hasPendingRequest বা requestCount > 0 ব্যবহার করতে পারেন)
+              const hasNewRequest = pet.hasPendingRequest || pet.requestCount > 0;
 
-                {/* Info */}
-                <div className="p-4">
-                  <h3 className="font-bold text-gray-900 dark:text-white text-lg">{pet.petName}</h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">{pet.species} • {pet.breed || 'Unknown breed'}</p>
-                  <p className="text-pink-500 font-bold text-lg mt-1">
-                    {pet.adoptionFee === 0 ? 'Free' : `$${pet.adoptionFee}`}
-                  </p>
-
-                  {/* Action Buttons */}
-                  <div className="flex items-center gap-2 mt-4 flex-wrap">
-                    <Link
-                      to={`/pets/${pet._id}`}
-                      className="flex items-center gap-1 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
-                    >
-                      <Eye size={13} /> View
-                    </Link>
-                    <Link
-                      to={`/edit-pet/${pet._id}`}
-                      className="flex items-center gap-1 text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-all"
-                    >
-                      <Edit size={13} /> Edit
-                    </Link>
-                    <button
-                      onClick={() => handleOpenModal(pet)}
-                      className="flex items-center gap-1 text-xs font-semibold bg-pink-50 dark:bg-pink-900/20 text-pink-600 px-3 py-1.5 rounded-lg hover:bg-pink-100 transition-all"
-                    >
-                      <HeartHandshake size={13} /> Requests
-                    </button>
-                    <button
-                      onClick={() => handleDeletePet(pet._id, pet.petName)}
-                      className="flex items-center gap-1 text-xs font-semibold bg-red-50 dark:bg-red-900/20 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-all ml-auto"
-                    >
-                      <Trash2 size={13} />
-                    </button>
+              return (
+                <motion.div
+                  key={pet._id}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-all"
+                >
+                  {/* Image */}
+                  <div className="relative">
+                    <img
+                      src={pet.image}
+                      alt={pet.petName}
+                      className="w-full h-48 object-cover"
+                    />
+                    <span className={`absolute top-3 right-3 text-xs font-bold px-2.5 py-1 rounded-full ${
+                      pet.adopted
+                        ? 'bg-red-100 text-red-600'
+                        : 'bg-green-100 text-green-600'
+                    }`}>
+                      {pet.adopted ? 'Adopted' : 'Available'}
+                    </span>
                   </div>
-                </div>
-              </motion.div>
-            ))}
+
+                  {/* Info */}
+                  <div className="p-4">
+                    <h3 className="font-bold text-gray-900 dark:text-white text-lg">{pet.petName}</h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm">{pet.species} • {pet.breed || 'Unknown breed'}</p>
+                    <p className="text-pink-500 font-bold text-lg mt-1">
+                      {pet.adoptionFee === 0 ? 'Free' : `$${pet.adoptionFee}`}
+                    </p>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 mt-4 flex-wrap">
+                      <Link
+                        to={`/pets/${pet._id}`}
+                        className="flex items-center gap-1 text-xs font-semibold bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 px-3 py-1.5 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+                      >
+                        <Eye size={13} /> View
+                      </Link>
+                      <Link
+                        to={`/edit-pet/${pet._id}`}
+                        className="flex items-center gap-1 text-xs font-semibold bg-blue-50 dark:bg-blue-900/20 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-all"
+                      >
+                        <Edit size={13} /> Edit
+                      </Link>
+                      
+                      {/* --- আপডেট করা রিকোয়েস্ট বাটন লজিক --- */}
+                      <button
+                        onClick={() => handleOpenModal(pet)}
+                        className={`flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-all border relative ${
+                          hasNewRequest
+                            ? 'bg-amber-500 text-white border-amber-500 shadow-md shadow-amber-500/30 animate-pulse'
+                            : 'bg-pink-50 dark:bg-pink-900/20 text-pink-600 border-transparent hover:bg-pink-100'
+                        }`}
+                      >
+                        <HeartHandshake size={13} /> 
+                        Requests 
+                        {hasNewRequest && (
+                          <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                          </span>
+                        )}
+                      </button>
+                      
+                      <button
+                        onClick={() => handleDeletePet(pet._id, pet.petName)}
+                        className="flex items-center gap-1 text-xs font-semibold bg-red-50 dark:bg-red-900/20 text-red-500 px-3 py-1.5 rounded-lg hover:bg-red-100 transition-all ml-auto"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         )}
       </div>
@@ -263,8 +280,7 @@ const MyListings = () => {
                         className={`rounded-xl p-5 border ${
                           req.status === 'approved'
                             ? 'border-green-200 bg-green-50 dark:bg-green-900/10 dark:border-green-800'
-                            : req.status === 'rejected'
-                            ? 'border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800'
+                            : 'border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800'
                             : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30'
                         }`}
                       >
@@ -283,8 +299,8 @@ const MyListings = () => {
                             req.status === 'approved'
                               ? 'bg-green-100 text-green-700'
                               : req.status === 'rejected'
-                              ? 'bg-red-100 text-red-700'
-                              : 'bg-yellow-100 text-yellow-700'
+                                ? 'bg-red-100 text-red-700'
+                                : 'bg-yellow-100 text-yellow-700'
                           }`}>
                             {req.status === 'approved' ? '✅ Approved' : req.status === 'rejected' ? '❌ Rejected' : '⏳ Pending'}
                           </span>
