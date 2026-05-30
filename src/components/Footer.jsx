@@ -127,9 +127,7 @@ const Footer = () => {
             <span className="mx-2 text-slate-700">|</span> 
             Developed By <span className="bg-gradient-to-r from-pink-400 to-rose-400 bg-clip-text text-transparent font-semibold hover:opacity-80 transition-opacity cursor-pointer">Sabir Mahmud</span>
           </p>
-          <p className="text-xs font-medium text-slate-500 flex items-center gap-1.5 bg-slate-900/60 px-3 py-1.5 rounded-full border border-slate-800/60">
-            Made with <FaHeart className="text-pink-500 animate-pulse text-[10px]" /> for pets everywhere
-          </p>
+          
         </div>
       </div>
     </footer>
