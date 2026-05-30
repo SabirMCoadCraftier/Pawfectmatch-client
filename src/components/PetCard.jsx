@@ -6,7 +6,10 @@ import { useAuth } from '../context/AuthProvider';
 const PetCard = ({ pet, index = 0 }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const statusColor = pet.adopted ? 'badge-error' : 'badge-success';
+  
+  const statusColor = pet.adopted 
+    ? 'bg-rose-500 text-white' 
+    : 'bg-emerald-500 text-white';
   const statusText = pet.adopted ? 'Adopted' : 'Available';
 
   const handleAdoptNow = () => {
@@ -19,78 +22,91 @@ const PetCard = ({ pet, index = 0 }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      whileHover={{ y: -8 }}
-      className="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+      transition={{ duration: 0.4, delay: index * 0.05, ease: 'easeOut' }}
+      whileHover={{ y: -6 }}
+      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700/60 shadow-sm hover:shadow-xl dark:hover:shadow-black/20 transition-all duration-300 overflow-hidden group flex flex-col h-full"
     >
-      <figure className="relative h-56 overflow-hidden">
+      {/* Thumbnail Layer */}
+      <figure className="relative h-52 overflow-hidden bg-slate-100 dark:bg-slate-900">
         <img
           src={pet.image}
           alt={pet.petName}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
           onError={(e) => {
-            e.target.src =
-              'https://images.unsplash.com/photo-1568572933382-74d440642117?w=400';
+            e.target.src = 'https://images.unsplash.com/photo-1568572933382-74d440642117?w=600';
           }}
         />
-        <div className="absolute top-3 right-3">
-          <div className={`badge ${statusColor} gap-1 text-white border-0 px-3 py-2`}>
+        
+        {/* Badges Overlay */}
+        <div className="absolute top-3 right-3 z-10">
+          <span className={`text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md shadow-sm ${statusColor}`}>
             {statusText}
-          </div>
+          </span>
         </div>
+        
         {!pet.adopted && (
-          <div className="absolute top-3 left-3">
-            <div className="badge badge-secondary gap-1 text-white border-0 px-3 py-2">
-              ${pet.adoptionFee || 'Free'}
-            </div>
+          <div className="absolute top-3 left-3 z-10">
+            <span className="text-[11px] font-bold tracking-wide px-2.5 py-1 rounded-md bg-white/90 dark:bg-slate-900/90 text-slate-800 dark:text-slate-100 backdrop-blur-sm border border-white/20 shadow-sm">
+              {pet.adoptionFee && Number(pet.adoptionFee) > 0 ? `$${pet.adoptionFee}` : 'Free Adoption'}
+            </span>
           </div>
         )}
       </figure>
 
-      <div className="card-body p-5">
-        <h2 className="card-title text-lg font-bold text-gray-800 dark:text-white">
+      {/* Details Area */}
+      <div className="p-5 flex flex-col flex-grow">
+        <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight line-clamp-1 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
           {pet.petName}
         </h2>
 
-        <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400 mt-2">
-          <span className="flex items-center gap-1">
-            <FaVenusMars className="text-pink-500" />
+        {/* Secondary Info Grid */}
+        <div className="flex items-center gap-3.5 text-xs font-medium text-slate-500 dark:text-slate-400 mt-2">
+          <span className="flex items-center gap-1.5">
+            <FaVenusMars className="text-pink-500 text-sm" />
             {pet.gender}
           </span>
-          <span className="flex items-center gap-1">
-            <FaMapMarkerAlt className="text-blue-500" />
+          <span className="flex items-center gap-1.5 max-w-[150px] truncate">
+            <FaMapMarkerAlt className="text-sky-500 text-sm" />
             {pet.location || 'Unknown'}
           </span>
         </div>
 
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 line-clamp-2">
-          {pet.description || `${pet.species} - ${pet.breed || 'Mixed'}`}
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2.5 line-clamp-2 leading-relaxed">
+          {pet.description || `${pet.species} • ${pet.breed || 'Mixed Breed'}`}
         </p>
 
-        <div className="flex items-center gap-2 mt-2 flex-wrap">
-          <div className="badge badge-outline badge-sm">{pet.species}</div>
+        {/* Tag Badges */}
+        <div className="flex items-center gap-1.5 mt-4 flex-wrap">
+          <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-transparent">
+            {pet.species}
+          </span>
           {pet.breed && (
-            <div className="badge badge-outline badge-sm">{pet.breed}</div>
+            <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-transparent max-w-[120px] truncate">
+              {pet.breed}
+            </span>
           )}
-          <div className="badge badge-outline badge-sm">{pet.age || 0} yrs</div>
+          <span className="px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider rounded-md bg-pink-50/50 dark:bg-pink-500/5 text-pink-600 dark:text-pink-400 border border-pink-100/30 dark:border-transparent">
+            {pet.age || 0} Yrs
+          </span>
         </div>
 
-        <div className="card-actions justify-between mt-4">
+        {/* Action Layer */}
+        <div className="flex items-center gap-2 mt-5 pt-4 border-t border-slate-50 dark:border-slate-700/50 w-full justify-between">
           <Link
             to={`/pets/${pet._id}`}
-            className="btn btn-sm rounded-full px-4 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-0 hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="flex items-center justify-center gap-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
           >
-            <FaHeart className="mr-1" /> View Details
+            <FaHeart className="text-[10px]" /> Details
           </Link>
 
           {!pet.adopted && (
             <button
               onClick={handleAdoptNow}
-              className="btn btn-sm rounded-full px-4 bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 hover:from-pink-600 hover:to-rose-600 shadow-md shadow-pink-500/25"
+              className="flex items-center justify-center gap-1.5 text-xs font-bold px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:opacity-95 shadow-md shadow-pink-500/10 transition-all active:scale-[0.98]"
             >
-              <FaPaw className="mr-1" /> Adopt Now
+              <FaPaw className="text-[10px]" /> Adopt Now
             </button>
           )}
         </div>

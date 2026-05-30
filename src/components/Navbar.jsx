@@ -37,30 +37,30 @@ const Navbar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            `flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
               isActive
-                ? 'text-pink-500 bg-pink-50 dark:bg-pink-900/20 font-semibold'
-                : 'text-gray-700 dark:text-gray-300 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                ? 'text-pink-600 bg-pink-50/80 dark:bg-pink-500/10 font-semibold'
+                : 'text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
             }`
           }
           onClick={() => setMobileOpen(false)}
         >
-          <FaHome /> Home
+          <FaHome className="opacity-80" /> Home
         </NavLink>
       </li>
       <li>
         <NavLink
           to="/pets"
           className={({ isActive }) =>
-            `flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+            `flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
               isActive
-                ? 'text-pink-500 bg-pink-50 dark:bg-pink-900/20 font-semibold'
-                : 'text-gray-700 dark:text-gray-300 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                ? 'text-pink-600 bg-pink-50/80 dark:bg-pink-500/10 font-semibold'
+                : 'text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
             }`
           }
           onClick={() => setMobileOpen(false)}
         >
-          <FaList /> All Pets
+          <FaList className="opacity-80" /> All Pets
         </NavLink>
       </li>
       {user && (
@@ -69,30 +69,30 @@ const Navbar = () => {
             <NavLink
               to="/my-requests"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                `flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
                   isActive
-                    ? 'text-pink-500 bg-pink-50 dark:bg-pink-900/20 font-semibold'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                    ? 'text-pink-600 bg-pink-50/80 dark:bg-pink-500/10 font-semibold'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                 }`
               }
               onClick={() => setMobileOpen(false)}
             >
-              <FaClipboardList /> My Requests
+              <FaClipboardList className="opacity-80" /> My Requests
             </NavLink>
           </li>
           <li>
             <NavLink
               to="/add-pet"
               className={({ isActive }) =>
-                `flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                `flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
                   isActive
-                    ? 'text-pink-500 bg-pink-50 dark:bg-pink-900/20 font-semibold'
-                    : 'text-gray-700 dark:text-gray-300 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                    ? 'text-pink-600 bg-pink-50/80 dark:bg-pink-500/10 font-semibold'
+                    : 'text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                 }`
               }
               onClick={() => setMobileOpen(false)}
             >
-              <FaPlusCircle /> Add Pet
+              <FaPlusCircle className="opacity-80" /> Add Pet
             </NavLink>
           </li>
           {user?.role === 'admin' && (
@@ -100,15 +100,15 @@ const Navbar = () => {
               <NavLink
                 to="/admin"
                 className={({ isActive }) =>
-                  `flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
+                  `flex items-center gap-2.5 px-4 py-2 rounded-xl transition-all duration-300 text-sm font-medium ${
                     isActive
-                      ? 'text-pink-500 bg-pink-50 dark:bg-pink-900/20 font-semibold'
-                      : 'text-gray-700 dark:text-gray-300 hover:text-pink-500 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                      ? 'text-pink-600 bg-pink-50/80 dark:bg-pink-500/10 font-semibold'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 hover:bg-slate-50 dark:hover:bg-slate-800/50'
                   }`
                 }
                 onClick={() => setMobileOpen(false)}
               >
-                <FaShieldAlt /> Admin Panel
+                <FaShieldAlt className="opacity-80" /> Admin Panel
               </NavLink>
             </li>
           )}
@@ -118,35 +118,37 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
+    <nav className="bg-white/80 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-100 dark:border-slate-800/60 sticky top-0 z-50 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-3 group">
             <motion.div
-              whileHover={{ rotate: 20, scale: 1.1 }}
-              className="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center"
+              whileHover={{ rotate: 12, scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              className="w-9 h-9 bg-gradient-to-br from-pink-500 to-rose-500 rounded-xl flex items-center justify-center shadow-md shadow-pink-500/20"
             >
-              <FaPaw className="text-white text-lg" />
+              <FaPaw className="text-white text-base" />
             </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
+            <span className="text-lg font-bold tracking-tight bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
               PawfectMatch
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-1">
-            <ul className="flex items-center gap-1">{navLinks}</ul>
+            <ul className="flex items-center gap-1.5">{navLinks}</ul>
           </div>
 
           {/* Right Side */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="btn btn-ghost btn-circle btn-sm text-gray-600 dark:text-gray-300"
+              className="p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-pink-600 dark:hover:text-pink-400 border border-slate-100 dark:border-slate-700/50 transition-all"
+              aria-label="Toggle Theme"
             >
-              {theme === 'light' ? <FaMoon size={18} /> : <FaSun size={18} />}
+              {theme === 'light' ? <FaMoon size={16} /> : <FaSun size={16} />}
             </button>
 
             {/* User Section */}
@@ -154,62 +156,58 @@ const Navbar = () => {
               <div className="dropdown dropdown-end">
                 <label
                   tabIndex={0}
-                  className="flex items-center gap-2 cursor-pointer px-2 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+                  className="flex items-center gap-2 cursor-pointer p-1.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/80 border border-transparent hover:border-slate-100 dark:hover:border-slate-700/50 transition-all"
                 >
-                  <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-pink-300">
+                  <div className="w-8 h-8 rounded-full overflow-hidden ring-2 ring-pink-500/20 ring-offset-2 ring-offset-white dark:ring-offset-slate-900">
                     <img
-                      src={
-                        user.photoURL ||
-                        'https://ui-avatars.com/api/?name=' + user.name
-                      }
+                      src={user.photoURL || `https://ui-avatars.com/api/?name=${user.name}&background=f43f5e&color=fff`}
                       alt={user.name}
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300 max-w-[100px] truncate">
+                  <span className="hidden sm:block text-xs font-semibold text-slate-700 dark:text-slate-300 max-w-[100px] truncate">
                     {user.name}
                   </span>
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content z-50 menu p-2 shadow-lg bg-white dark:bg-gray-800 rounded-xl w-52 border border-gray-200 dark:border-gray-700"
+                  className="dropdown-content z-50 menu p-1.5 shadow-xl bg-white dark:bg-slate-800 rounded-2xl w-56 border border-slate-100 dark:border-slate-700 mt-2"
                 >
-                  <li className="menu-title">
-                    <span className="text-gray-500 dark:text-gray-400">
-                      <FaUser className="inline mr-2" />
-                      {user.name}
-                    </span>
-                  </li>
+                  <div className="px-3 py-2 border-b border-slate-50 dark:border-slate-700/50 mb-1">
+                    <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">Signed in as</p>
+                    <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 truncate">{user.name}</p>
+                  </div>
                   <li>
                     <Link
                       to="/dashboard"
-                      className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-pink-500"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 text-sm"
                     >
-                      <FaHeart /> Dashboard
+                      <FaHeart className="text-xs" /> Dashboard
                     </Link>
                   </li>
                   {user?.role === 'admin' && (
                     <li>
                       <Link
                         to="/admin"
-                        className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-pink-500"
+                        className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-600 dark:text-slate-300 hover:text-pink-600 dark:hover:text-pink-400 text-sm"
                       >
-                        <FaCog /> Admin Panel
+                        <FaCog className="text-xs" /> Admin Panel
                       </Link>
                     </li>
                   )}
+                  <div className="h-px bg-slate-50 dark:bg-slate-700/50 my-1" />
                   <li>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-red-500"
+                      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-sm font-medium"
                     >
-                      <FaSignOutAlt /> Logout
+                      <FaSignOutAlt className="text-xs" /> Logout
                     </button>
                   </li>
                 </ul>
               </div>
             ) : (
-              <Link to="/login" className="btn btn-pink btn-sm rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 hover:from-pink-600 hover:to-rose-600">
+              <Link to="/login" className="px-5 py-2 text-xs font-semibold rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white hover:opacity-95 shadow-md shadow-pink-500/10 transition-all">
                 Login
               </Link>
             )}
@@ -217,9 +215,9 @@ const Navbar = () => {
             {/* Mobile Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="lg:hidden btn btn-ghost btn-circle btn-sm"
+              className="lg:hidden p-2 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-all"
             >
-              {mobileOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+              {mobileOpen ? <FaTimes size={16} /> : <FaBars size={16} />}
             </button>
           </div>
         </div>
@@ -229,12 +227,13 @@ const Navbar = () => {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 overflow-hidden"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="lg:hidden bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shadow-inner overflow-hidden"
           >
-            <ul className="flex flex-col p-4 gap-1">{navLinks}</ul>
+            <ul className="flex flex-col p-4 gap-1.5">{navLinks}</ul>
           </motion.div>
         )}
       </AnimatePresence>
