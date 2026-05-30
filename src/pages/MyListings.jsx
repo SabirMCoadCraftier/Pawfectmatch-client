@@ -18,6 +18,12 @@ const MyListings = () => {
     try {
       const data = await apiFetch('/pets/my');
       setListings(data);
+      
+      // ডপডাউন মোডাল খোলা থাকলে সেটির পেটের লেটেস্ট অবজেক্ট স্টেটও আপডেট করে দিচ্ছি
+      if (selectedPet) {
+        const updatedPet = data.find(p => p._id === selectedPet._id);
+        if (updatedPet) setSelectedPet(updatedPet);
+      }
     } catch (err) {
       toast.error('Failed to fetch your listings');
     } finally {
@@ -57,8 +63,11 @@ const MyListings = () => {
     try {
       await apiFetch(`/adoption-requests/${requestId}/approve`, { method: 'PATCH' });
       toast.success('Request approved! 🎉');
-      handleOpenModal(selectedPet);
-      fetchListings(); 
+      
+      // মোডাল ক্লোজ করে পেজ রি-লোড দিয়ে ডাটা সিঙ্ক করার সবচেয়ে সেফ এবং রিয়েল-টাইম ট্রিক
+      setSelectedPet(null); 
+      fetchListings();
+      window.location.reload(); 
     } catch (err) {
       toast.error(err.message || 'Failed to approve');
     }
@@ -69,7 +78,11 @@ const MyListings = () => {
     try {
       await apiFetch(`/adoption-requests/${requestId}/reject`, { method: 'PATCH' });
       toast.success('Request rejected');
-      handleOpenModal(selectedPet);
+      
+      // মোডাল ক্লোজ করে পেজ রি-লোড দিয়ে ডাটা সিঙ্ক করার সবচেয়ে সেফ এবং রিয়েল-টাইম ট্রিক
+      setSelectedPet(null);
+      fetchListings();
+      window.location.reload();
     } catch (err) {
       toast.error(err.message || 'Failed to reject');
     }
