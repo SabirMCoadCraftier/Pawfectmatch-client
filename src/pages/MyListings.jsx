@@ -19,6 +19,7 @@ const MyListings = () => {
       const data = await apiFetch('/pets/my');
       setListings(data);
       
+      // Update the selected pet state to keep modal data synchronized
       if (selectedPet) {
         const updatedPet = data.find(p => p._id === selectedPet._id);
         if (updatedPet) setSelectedPet(updatedPet);
@@ -63,6 +64,7 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/approve`, { method: 'PATCH' });
       toast.success('Request approved! 🎉');
       
+      // Close modal and force reload to ensure consistent state and real-time synchronization
       setSelectedPet(null); 
       fetchListings();
       window.location.reload(); 
@@ -77,6 +79,7 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/reject`, { method: 'PATCH' });
       toast.success('Request rejected');
       
+      // Close modal and force reload to ensure consistent state and real-time synchronization
       setSelectedPet(null);
       fetchListings();
       window.location.reload();
@@ -141,8 +144,7 @@ const MyListings = () => {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {listings.map((pet, i) => {
-              // চেক করা হচ্ছে ব্যাকএন্ড থেকে পেন্ডিং রিকোয়েস্ট ট্র্যাকিং ডাটা আসছে কি না
-              // (আপনার ব্যাকএন্ড এপিআই অনুযায়ী hasPendingRequest বা requestCount > 0 ব্যবহার করতে পারেন)
+              // Check if backend provides data indicating pending or incoming requests
               const hasNewRequest = pet.hasPendingRequest || pet.requestCount > 0;
 
               return (
@@ -192,7 +194,7 @@ const MyListings = () => {
                         <Edit size={13} /> Edit
                       </Link>
                       
-                      {/* --- আপডেট করা রিকোয়েস্ট বাটন লজিক --- */}
+                      {/* Dynamic Request Button with Notification Badge */}
                       <button
                         onClick={() => handleOpenModal(pet)}
                         className={`flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-lg transition-all border relative ${
@@ -280,8 +282,9 @@ const MyListings = () => {
                         className={`rounded-xl p-5 border ${
                           req.status === 'approved'
                             ? 'border-green-200 bg-green-50 dark:bg-green-900/10 dark:border-green-800'
-                            : 'border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800'
-                            : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30'
+                            : req.status === 'rejected'
+                              ? 'border-red-200 bg-red-50 dark:bg-red-900/10 dark:border-red-800'
+                              : 'border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30'
                         }`}
                       >
                         <div className="flex items-start justify-between flex-wrap gap-3">
