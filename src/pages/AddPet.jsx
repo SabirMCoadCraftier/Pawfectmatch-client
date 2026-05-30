@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosInstance from '../api/axiosInstance';
 import { useAuth } from '../context/AuthProvider';
 import toast from 'react-hot-toast';
-import { FaPaw, FaPlusCircle, FaImage } from 'react-icons/fa';
+import { FaPlusCircle, FaImage } from 'react-icons/fa';
 
 const AddPet = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [form, setForm] = useState({
     petName: '',
@@ -32,6 +33,10 @@ const AddPet = () => {
   const mutation = useMutation({
     mutationFn: (data) => axiosInstance.post('/api/pets', data),
     onSuccess: () => {
+      // হোম পেজ এবং অল পেটস পেজের ক্যাশ ক্লিয়ার করা হচ্ছে যেন ডাটা ইনস্ট্যান্ট আপডেট হয়
+      queryClient.invalidateQueries({ queryKey: ['featuredPets'] });
+      queryClient.invalidateQueries({ queryKey: ['pets'] });
+      
       toast.success('Pet added successfully!');
       navigate('/my-listings');
     },
@@ -90,7 +95,7 @@ const AddPet = () => {
                   value={form.petName}
                   onChange={handleChange}
                   placeholder="e.g., Buddy"
-                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 />
               </div>
@@ -106,7 +111,7 @@ const AddPet = () => {
                   name="species"
                   value={form.species}
                   onChange={handleChange}
-                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                   required
                 >
                   <option value="">Select species</option>
@@ -131,7 +136,7 @@ const AddPet = () => {
                   value={form.breed}
                   onChange={handleChange}
                   placeholder="e.g., Golden Retriever"
-                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -148,7 +153,7 @@ const AddPet = () => {
                   min="0"
                   step="0.5"
                   placeholder="e.g., 2"
-                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -161,7 +166,7 @@ const AddPet = () => {
                   name="gender"
                   value={form.gender}
                   onChange={handleChange}
-                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">Select gender</option>
                   <option value="Male">Male</option>
@@ -184,7 +189,7 @@ const AddPet = () => {
                     value={form.image}
                     onChange={handleChange}
                     placeholder="https://example.com/pet.jpg"
-                    className="input input-bordered w-full pl-10 bg-gray-50 dark:bg-gray-700"
+                    className="input input-bordered w-full pl-10 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                     required
                   />
                 </div>
@@ -209,7 +214,7 @@ const AddPet = () => {
                   name="healthStatus"
                   value={form.healthStatus}
                   onChange={handleChange}
-                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
                   <option value="">Select status</option>
                   <option value="Healthy">Healthy</option>
@@ -228,9 +233,9 @@ const AddPet = () => {
                   name="vaccinationStatus"
                   value={form.vaccinationStatus}
                   onChange={handleChange}
-                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="select select-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 >
-                  <option value="">Select status</option>
+                  <option value="">Select vaccination</option>
                   <option value="Fully Vaccinated">Fully Vaccinated</option>
                   <option value="Partially Vaccinated">Partially Vaccinated</option>
                   <option value="Not Vaccinated">Not Vaccinated</option>
@@ -248,7 +253,7 @@ const AddPet = () => {
                   value={form.location}
                   onChange={handleChange}
                   placeholder="e.g., New York, NY"
-                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
 
@@ -263,25 +268,10 @@ const AddPet = () => {
                   value={form.adoptionFee}
                   onChange={handleChange}
                   min="0"
-                  placeholder="0 for free"
-                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700"
+                  placeholder="e.g., 50"
+                  className="input input-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white"
                 />
               </div>
-            </div>
-
-            {/* Owner Email (readonly) */}
-            <div>
-              <label className="label">
-                <span className="label-text font-medium">
-                  Owner Email <span className="text-red-500">*</span>
-                </span>
-              </label>
-              <input
-                type="email"
-                value={user?.email || ''}
-                readOnly
-                className="input input-bordered w-full bg-gray-100 dark:bg-gray-600"
-              />
             </div>
 
             {/* Description */}
@@ -293,25 +283,21 @@ const AddPet = () => {
                 name="description"
                 value={form.description}
                 onChange={handleChange}
-                placeholder="Tell us about the pet's personality, habits, and why they need a home..."
-                rows={4}
-                className="textarea textarea-bordered w-full bg-gray-50 dark:bg-gray-700"
-              />
+                placeholder="Tell us more about the pet's personality, habits, and background..."
+                className="textarea textarea-bordered w-full bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white h-32"
+              ></textarea>
             </div>
 
-            <button
-              type="submit"
-              disabled={mutation.isPending}
-              className="btn bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 w-full rounded-full hover:from-pink-600 hover:to-rose-600 shadow-lg shadow-pink-500/25 py-3 h-auto text-lg"
-            >
-              {mutation.isPending ? (
-                <span className="loading loading-spinner loading-sm" />
-              ) : (
-                <>
-                  <FaPaw /> Add Pet for Adoption
-                </>
-              )}
-            </button>
+            {/* Submit Button */}
+            <div className="flex justify-end pt-4">
+              <button
+                type="submit"
+                disabled={mutation.isPending}
+                className="btn bg-gradient-to-r from-pink-500 to-rose-500 text-white border-0 px-8 rounded-xl hover:from-pink-600 hover:to-rose-600 w-full sm:w-auto shadow-lg shadow-pink-500/20"
+              >
+                {mutation.isPending ? 'Adding Pet...' : 'Add Pet for Adoption'}
+              </button>
+            </div>
           </form>
         </motion.div>
       </div>
