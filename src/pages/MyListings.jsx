@@ -25,7 +25,7 @@ const MyListings = () => {
     }
   };
 
-  useEffect(() => { fetchListings(); }, [user]);
+  useEffect(() => { if (user) fetchListings(); }, [user]);
 
   const handleDeletePet = async (petId, petName) => {
     if (!window.confirm(`Delete ${petName}? This cannot be undone.`)) return;
@@ -58,7 +58,7 @@ const MyListings = () => {
       await apiFetch(`/adoption-requests/${requestId}/approve`, { method: 'PATCH' });
       toast.success('Request approved! 🎉');
       handleOpenModal(selectedPet);
-      fetchListings();
+      fetchListings(); // লিস্ট রিফ্রেশ করবে কারণ পেটের স্ট্যাটাস Adopted হয়ে যাবে
     } catch (err) {
       toast.error(err.message || 'Failed to approve');
     }
@@ -82,7 +82,7 @@ const MyListings = () => {
   const adopted = listings.filter(p => p.adopted).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 relative overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
 
         {/* Header */}
@@ -196,21 +196,26 @@ const MyListings = () => {
         )}
       </div>
 
-      {/* Requests Modal */}
+      {/* Right Side Sliding Requests Drawer Modal */}
       <AnimatePresence>
         {selectedPet && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            onClick={(e) => e.target === e.currentTarget && setSelectedPet(null)}
-          >
+          <div className="fixed inset-0 z-50 flex justify-end">
+            {/* Backdrop Blur effect */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/40 backdrop-blur-xs"
+              onClick={() => setSelectedPet(null)}
+            />
+
+            {/* Side Drawer Content */}
+            <motion.div
+              initial={{ x: '100%' }} // ডান পাশ থেকে ঢুকবে
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+              className="relative w-full max-w-lg md:max-w-xl h-full bg-white dark:bg-gray-800 shadow-2xl flex flex-col z-10"
             >
               {/* Modal Header */}
               <div className="flex items-start justify-between p-6 border-b border-gray-100 dark:border-gray-700">
@@ -218,7 +223,7 @@ const MyListings = () => {
                   <h2 className="text-xl font-bold text-gray-900 dark:text-white">
                     Adoption Requests for <span className="text-pink-500">{selectedPet.petName}</span>
                   </h2>
-                  <p className="text-gray-500 text-sm mt-1">Approve or reject incoming adoption requests.</p>
+                  <p className="text-gray-500 text-sm mt-1">Approve or reject incoming applications.</p>
                 </div>
                 <button
                   onClick={() => setSelectedPet(null)}
@@ -228,8 +233,8 @@ const MyListings = () => {
                 </button>
               </div>
 
-              {/* Modal Body */}
-              <div className="p-6">
+              {/* Modal Body (Scrollable Container) */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
                 {modalLoading ? (
                   <div className="flex justify-center py-12">
                     <div className="w-8 h-8 border-4 border-pink-500 border-t-transparent rounded-full animate-spin" />
@@ -289,7 +294,7 @@ const MyListings = () => {
                           </div>
                         )}
 
-                        {/* Approve/Reject Buttons - only for pending */}
+                        {/* Approve/Reject Buttons */}
                         {req.status === 'pending' && !selectedPet.adopted && (
                           <div className="flex gap-3 mt-4">
                             <button
@@ -312,7 +317,7 @@ const MyListings = () => {
                 )}
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>
